@@ -1,0 +1,88 @@
+syntax = "proto3";
+package authzed.api.v1;
+
+option go_package = "github.com/authzed/authzed-go/proto/authzed/api/v1";
+option java_package = "com.authzed.api.v1";
+
+import "google/protobuf/struct.proto";
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+import "authzed/api/v1/core.proto";
+
+// PermissionsService implements a set of RPCs that perform operations on
+// relationships and permissions.
+service PermissionsServiceExt {
+  // ReadRelationships reads a set of the relationships matching one or more
+  // filters.
+  rpc ReadRelationships(ReadRelationshipsRequest)
+    returns (stream ReadRelationshipsResponseExt) {
+      option (google.api.http) = {
+        post: "/v1/relationships-ext/read"
+        body: "*"
+      };
+  }
+
+  // WriteRelationships atomically writes and/or deletes a set of specified
+  // relationships. An optional set of preconditions can be provided that must
+  // be satisfied for the operation to commit.
+  rpc WriteRelationships(WriteRelationshipsRequestExt)
+    returns (WriteRelationshipsResponse) {
+      option (google.api.http) = {
+        post: "/v1/relationships-ext/write"
+        body: "*"
+      };
+    }
+
+  }
+
+// ReadRelationshipsResponse contains a Relationship found that matches the
+// specified relationship filter(s). A instance of this response message will
+// be streamed to the client for each relationship found.
+message ReadRelationshipsResponseExt {
+  // read_at is the ZedToken at which the relationship was found.
+  ZedToken read_at = 1 [ (validate.rules).message.required = true ];
+
+  // relationship is the found relationship.
+  RelationshipExt relationship = 2 [ (validate.rules).message.required = true ];
+
+  // after_result_cursor holds a cursor that can be used to resume the ReadRelationships stream after this
+  // result.
+  Cursor after_result_cursor = 3;
+}
+
+// WriteRelationshipsRequest contains a list of Relationship mutations that
+// should be applied to the service. If the optional_preconditions parameter
+// is included, all of the specified preconditions must also be satisfied before
+// the write will be committed.
+message WriteRelationshipsRequestExt {
+  repeated RelationshipUpdateExt updates = 1
+      [ (validate.rules).repeated .items.message.required = true ];
+
+  repeated Precondition optional_preconditions = 2
+      [ (validate.rules).repeated .items.message.required =
+            true ]; // To be bounded by configuration
+}
+
+
+// RelationshipUpdate is used for mutating a single relationship within the
+// service.
+//
+// CREATE will create the relationship only if it doesn't exist, and error
+// otherwise.
+//
+// TOUCH will upsert the relationship, and will not error if it
+// already exists.
+//
+// DELETE will delete the relationship. If the relationship does not exist,
+// this operation will no-op.
+message RelationshipUpdateExt {
+  enum Operation {
+    OPERATION_UNSPECIFIED = 0;
+    OPERATION_CREATE = 1;
+    OPERATION_TOUCH = 2;
+    OPERATION_DELETE = 3;
+  }
+  Operation operation = 1 [ (validate.rules).enum = {defined_only: true, not_in: [0]} ];
+  RelationshipExt relationship = 2 [ (validate.rules).message.required = true ];
+}
