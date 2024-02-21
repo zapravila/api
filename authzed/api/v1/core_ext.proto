@@ -4,9 +4,8 @@ package authzed.api.v1;
 option go_package = "github.com/authzed/authzed-go/proto/authzed/api/v1";
 option java_package = "com.authzed.api.v1";
 
-import "google/protobuf/struct.proto";
 import "validate/validate.proto";
-
+import "authzed/api/v1/core.proto";
 // Relationship specifies how a resource relates to a subject. Relationships
 // form the data for the graph over which all permissions questions are
 // answered.

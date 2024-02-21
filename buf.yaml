@@ -1,10 +1,9 @@
 ---
 version: "v1"
 name: "buf.build/authzed/api"
-deps:
-  - "buf.build/envoyproxy/protoc-gen-validate"
-  - "buf.build/googleapis/googleapis"
-  - "buf.build/grpc-ecosystem/grpc-gateway"
 lint:
   ignore:
-    - "authzed/api/v0"  # legacy from before we used buf
+    - "authzed/api/v0" # legacy from before we used buf
+    - "protoc-gen-openapiv2"
+    - "validate"
+    - "google"
