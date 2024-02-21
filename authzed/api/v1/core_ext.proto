@@ -21,9 +21,9 @@ message RelationshipExt {
 
   // subject is the subject to which the resource is related, in some manner.
   SubjectReference subject = 3 [ (validate.rules).message.required = true ];
-
-  string optional_description = 4 [ (validate.rules).message.required = false ];
-  string optional_comment = 5 [ (validate.rules).message.required = false ];
+  
+  string optional_description = 4 [ (validate.rules).string.ignore_empty = true ];
+  string optional_comment = 5 [ (validate.rules).string.ignore_empty = true ];
   // optional_caveat is a reference to a the caveat that must be enforced over the relationship
   ContextualizedCaveat optional_caveat = 6 [ (validate.rules).message.required = false ];
 }
