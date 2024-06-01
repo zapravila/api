@@ -7,3 +7,6 @@ lint:
     - "protoc-gen-openapiv2"
     - "validate"
     - "google"
+breaking:
+  use:
+    - "WIRE_JSON"
