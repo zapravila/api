@@ -26,10 +26,8 @@ message Relationship {
 
   // optional_caveat is a reference to a the caveat that must be enforced over the relationship
   ContextualizedCaveat optional_caveat = 4 [ (validate.rules).message.required = false ];
- 
-  
-  optional string optional_description = 5;  // [ (validate.rules).string.ignore_empty = true ];
-  optional string optional_comment = 6; // [ (validate.rules).string.ignore_empty = true ];
+  string optional_description = 5 [ (validate.rules).message.required = false ];
+  string optional_comment = 6 [ (validate.rules).message.required = false ];
 }
 
 // ContextualizedCaveat represents a reference to a caveat to be used by caveated relationships.
